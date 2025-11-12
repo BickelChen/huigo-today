@@ -44,7 +44,7 @@
         <!-- 標題 -->
         <header class="mb-8">
             <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-500 mb-2">
-                輝哥的晨間啟動器V1-2025/11/12
+                輝哥的晨間啟動器
             </h1>
             <p id="current-date" class="text-xl text-gray-500">正在載入日期...</p>
         </header>
@@ -72,37 +72,16 @@
                 </div>
             </div>
 
-            <!-- 卡片 3: 歷史上的今天 -->
-            <div id="history-card" class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.3s;">
-                <h2 class="text-xl font-semibold text-purple-600 mb-4">歷史上的今天</h2>
-                <div id="history-content" class="min-h-[150px] text-gray-700 text-sm overflow-y-auto max-h-[150px] flex items-center justify-center">
-                    <div class="loader"></div>
-                </div>
-            </div>
-
-            <!-- 卡片 4: CNA 科技新聞 -->
-            <div id="news-card" class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.4s;">
+            <!-- 卡片 3: CNA 科技新聞 -->
+            <div id="news-card" class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.3s;">
                 <h2 id="news-title" class="text-xl font-semibold text-red-600 mb-4">CNA 科技新聞</h2>
                 <div id="news-content" class="min-h-[150px] flex items-center justify-center">
                     <div class="loader"></div>
                 </div>
             </div>
             
-            <!-- 卡片 5: 今日 Vibe -->
-            <div id="vibe-card" class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.5s;">
-                <h2 class="text-xl font-semibold text-cyan-600 mb-4">今日 Vibe</h2>
-                <!-- 早安圖 -->
-                <div id="vibe-image-content" class="min-h-[150px] flex items-center justify-center mb-4">
-                    <div class="loader"></div>
-                </div>
-                <!-- 每日金句 -->
-                <div id="vibe-quote-content" class="min-h-[50px] text-gray-700 text-sm italic flex items-center justify-center">
-                    <div class="loader"></div>
-                </div>
-            </div>
-
-            <!-- 卡片 6: 快速連結 -->
-            <div class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.6s;">
+            <!-- 卡片 4: 快速連結 -->
+            <div class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.4s;">
                 <h2 class="text-xl font-semibold text-indigo-600 mb-4">快速連結</h2>
                 <div class="flex flex-col space-y-3">
                     <a href="mailto:" target="_blank" rel="noopener noreferrer" class="py-2 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">Email</a>
@@ -113,8 +92,8 @@
                 </div>
             </div>
 
-            <!-- 卡片 7: 今日待辦 (Top 3) -->
-            <div id="todo-card" class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.7s;">
+            <!-- 卡片 5: 今日待辦 (Top 3) -->
+            <div id="todo-card" class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.5s;">
                 <h2 class="text-xl font-semibold text-orange-600 mb-4">今日待辦 (Top 3)</h2>
                 <div class="space-y-3">
                     <div class="flex items-center">
@@ -132,8 +111,8 @@
                 </div>
             </div>
 
-            <!-- 卡片 8: 即時筆記 -->
-            <div id="notes-card" class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.8s;">
+            <!-- 卡片 6: 即時筆記 -->
+            <div id="notes-card" class="card-fade-in bg-white p-5 rounded-xl shadow-lg" style="animation-delay: 0.6s;">
                 <h2 class="text-xl font-semibold text-pink-600 mb-4">即時筆記</h2>
                 <textarea class="w-full h-32 p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 bg-pink-50/50" placeholder="Vibe 在這裡..."></textarea>
             </div>
@@ -143,21 +122,11 @@
     </div> <!-- end container -->
 
     <script>
-        // --- Vibe: API 設定 ---
-        // 環境會自動注入 API Key
-        const apiKey = ""; 
-        const apiUrlFlash = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-        const apiUrlImagen = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
-
         // 頁面載入時執行
         window.onload = () => {
             setCurrentDate();
             fetchWeather(); // (即時 RSS)
-            // Vibe Vibe: 不再呼叫 fetchHoroscope()
-            fetchTodayInHistory(); // (Gemini)
             fetchCnaNews(); // (即時 RSS + 後備 Vibe)
-            fetchDailyImage(); // (Imagen)
-            fetchDailyQuote(); // (Gemini)
         }
 
         // --- 1. 設定日期 ---
@@ -218,28 +187,10 @@
         }
 
         // --- 3. Vibe Vibe: goodaytw.com 的 Vibe (靜態傳送門) ---
-        // 我們不需要 fetchHoroscope() 了，因為 HTML 已經 Vibe 好了。
+        // (HTML 已 Vibe 完畢)
 
 
-        // --- 4. 取得歷史上的今天 (Gemini) ---
-        async function fetchTodayInHistory() {
-            const contentEl = document.getElementById('history-content');
-            const now = new Date();
-            const todayString = `${now.getMonth() + 1}月${now.getDate()}日`;
-            
-            const prompt = `請用繁體中文，告訴我今天 (${todayString}) 歷史上發生的一件有趣或重要的事。請簡潔，並只回傳事件描述。`;
-
-            try {
-                const text = await callGemini(prompt);
-                contentEl.innerHTML = `<p>${text.replace(/\n/g, '<br>')}</p>`;
-                contentEl.classList.remove('flex', 'items-center', 'justify-center');
-            } catch (error) {
-                console.error('無法載入歷史事件:', error);
-                contentEl.innerHTML = `<span class="text-sm text-red-500">無法載入歷史事件: ${error.message}</span>`;
-            }
-        }
-
-        // --- 5. 取得 CNA 科技新聞 (即時 RSS) ---
+        // --- 4. 取得 CNA 科技新聞 (即時 RSS) ---
         async function fetchCnaNews() {
             const contentEl = document.getElementById('news-content');
             const rssFeedUrl = 'https://feeds.feedburner.com/rsscna/technology';
@@ -288,109 +239,6 @@
                     前往 CTEE 工商時報
                 </a>
             `;
-        }
-
-
-        // --- 6. 取得今日 Vibe (早安圖 + 金句) ---
-        async function fetchDailyImage() {
-            const contentEl = document.getElementById('vibe-image-content');
-            const prompt = "一張充滿正能量、清新風格的早安圖，適合放在晨間儀表板上。例如日出、咖啡、或微笑。";
-            
-            try {
-                const base64Image = await callImagen(prompt);
-                contentEl.innerHTML = `<img src="data:image/png;base64,${base64Image}" alt="今日早安圖" class="rounded-lg object-cover w-full h-full max-h-[150px]">`;
-            } catch (error) {
-                console.error('無法產生早安圖:', error);
-                contentEl.innerHTML = `<span class="text-sm text-red-500">無法產生早安圖: ${error.message}</span>`;
-            }
-        }
-
-        async function fetchDailyQuote() {
-            const contentEl = document.getElementById('vibe-quote-content');
-            const prompt = "請用繁體中文，給我一句激勵人心的話，適合在新的一天開始時閱讀。請只回傳這句話，不要有其他文字。";
-            
-            try {
-                const text = await callGemini(prompt);
-                contentEl.innerHTML = `<p>"${text}"</p>`;
-            } catch (error) {
-                console.error('無法載入今日金句:', error);
-                contentEl.innerHTML = `<span class="text-sm text-red-500">無法載入今日金句: ${error.message}</span>`;
-            }
-        }
-
-
-        // --- Vibe: API 呼叫工具 ---
-
-        // Vibe: 呼叫 Gemini (Flash)
-        async function callGemini(prompt) {
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                // Vibe Vibe: 移除 generationConfig，使用預設值
-            };
-            const response = await fetchWithBackoff(apiUrlFlash, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-            
-            // Vibe Vibe: 增強錯誤 Vibe
-            if (result.candidates && result.candidates.length > 0) {
-                const candidate = result.candidates[0];
-                if (candidate.content && candidate.content.parts && candidate.content.parts[0].text) {
-                    return candidate.content.parts[0].text;
-                }
-                if (candidate.finishReason && candidate.finishReason !== "STOP") {
-                    throw new Error(`Gemini API 提早結束: ${candidate.finishReason}`);
-                }
-            }
-            
-            // Vibe Vibe: 印出完整 Vibe 抓蟲
-            console.error("Gemini API 格式錯誤，完整回應:", result);
-            throw new Error('Gemini API 回應格式不符');
-        }
-
-        // Vibe: 呼叫 Imagen
-        async function callImagen(prompt) {
-            const payload = {
-                instances: [{ prompt: prompt }],
-                parameters: { "sampleCount": 1 }
-            };
-            const response = await fetchWithBackoff(apiUrlImagen, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-            if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
-                return result.predictions[0].bytesBase64Encoded;
-            } else {
-                console.error("Imagen API 格式錯誤，完整回應:", result);
-                throw new Error('Imagen API 回應格式不符');
-            }
-        }
-
-        // Vibe: 具備指數退避的 Fetch
-        async function fetchWithBackoff(url, options, retries = 3, delay = 1000) {
-            let lastError;
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) {
-                        const errorBody = await response.text();
-                        throw new Error(`HTTP 錯誤! 狀態: ${response.status} ${errorBody.substring(0, 100)}`);
-                    }
-                    return response;
-                } catch (error) {
-                    lastError = error;
-                    console.warn(`Fetch Vibe 失敗 (第 ${i + 1} 次): ${error.message}。 ${delay}ms 後重試...`);
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    delay *= 2; // 指數退避
-                }
-            }
-            throw new Error(`Fetch 失敗，已達最大重試次數: ${lastError.message}`);
         }
 
     </script>
